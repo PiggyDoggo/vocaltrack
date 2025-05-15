@@ -2,39 +2,39 @@
 .container {
   padding: 20rpx;
 }
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 40rpx;
-}
-.userinfo-avatar {
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-.userinfo-nickname {
-  color: #aaaaaa;
-}
-.generate-card-btn {
-  margin-bottom: 20rpx;
-  background-color: #1aad19;
-  color: white;
-}
+
 .card-info {
   margin-bottom: 20rpx;
   padding: 20rpx;
   background-color: #f8f8f8;
   border-radius: 10rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 10rpx;
 }
+
+.card-info text {
+  font-size: 28rpx;
+  color: #333;
+}
+
 .chart-container {
   margin-bottom: 40rpx;
+  padding: 20rpx;
+  background-color: white;
+  border-radius: 10rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.1);
 }
+
 .chart-title {
+  font-size: 32rpx;
   font-weight: bold;
-  margin-bottom: 10rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-left: 10rpx;
+  border-left: 4rpx solid #4CAF50;
 }
+
 .action-buttons {
   display: flex;
   justify-content: space-around;

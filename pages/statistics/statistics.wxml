@@ -1,27 +1,8 @@
 <!--pages/statistics/statistics.wxml-->
 <view class="container">
-  <view class="user-info">
-    <block wx:if="{{canIUseOpenData}}">
-      <view class="userinfo-avatar">
-        <open-data type="userAvatarUrl"></open-data>
-      </view>
-      <open-data type="userNickName"></open-data>
-    </block>
-    <block wx:elif="{{!hasUserInfo}}">
-      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
-    </block>
-    <block wx:else>
-      <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view>
-  <button class="generate-card-btn" bindtap="generateCard">生成打卡</button>
   <view class="card-info">
     <text>本周平均训练时长：{{weeklyAverage}}分钟</text>
     <text>连续打卡天数：{{consecutiveDays}}天</text>
-    <text>激励话语：{{motivationalText}}</text>
   </view>
   <view class="chart-container">
     <view class="chart-title">本周训练时长</view>
@@ -34,9 +15,5 @@
   <view class="chart-container">
     <view class="chart-title">本年训练时长</view>
     <!-- 这里应该插入图表组件，显示yearlyData -->
-  </view>
-  <view class="action-buttons">
-    <button bindtap="saveCardToAlbum">保存到相册</button>
-    <button bindtap="shareCard">分享卡片</button>
   </view>
 </view>
