@@ -435,26 +435,32 @@
 }
 
 .mark-btn {
-  background: #FF9F43;
-  border-radius: 50%;
-  width: 80rpx;
-  height: 80rpx;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0 20rpx;
+  border: 2rpx solid #FF9F43;
+  border-radius: 8rpx;
+  padding: 8rpx 16rpx;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.mark-btn:active {
+  background: #FFF5EC;
+  transform: scale(0.98);
 }
 
 .mark-btn .iconfont {
-  color: white;
-  font-size: 36rpx;
+  color: #FF9F43;
+  font-size: 32rpx;
+  margin-bottom: 4rpx;
 }
 
 .mark-btn .btn-text {
-  color: white;
-  font-size: 20rpx;
-  margin-top: 4rpx;
+  color: #FF9F43;
+  font-size: 22rpx;
 }
 
 .memo-content-wrapper {

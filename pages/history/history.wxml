@@ -75,7 +75,7 @@
       <text class="btn-text">-10s</text>
     </view>
     <view class="control-btn mark-btn" bindtap="markCurrentTime">
-      <text class="iconfont">🔖</text>
+      <text class="iconfont">⌚</text>
       <text class="btn-text">标记时间</text>
     </view>
     <view class="control-btn forward-btn" bindtap="forward10">
