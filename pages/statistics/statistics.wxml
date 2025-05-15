@@ -1,19 +1,7 @@
 <!--pages/statistics/statistics.wxml-->
 <view class="container">
   <view class="card-info">
-    <text>本周平均训练时长：{{weeklyAverage}}分钟</text>
+    <text>最近七天训练总时长：{{weeklyTotal}}分钟</text>
     <text>连续打卡天数：{{consecutiveDays}}天</text>
-  </view>
-  <view class="chart-container">
-    <view class="chart-title">本周训练时长</view>
-    <!-- 这里应该插入图表组件，显示weeklyData -->
-  </view>
-  <view class="chart-container">
-    <view class="chart-title">本月训练时长</view>
-    <!-- 这里应该插入图表组件，显示monthlyData -->
-  </view>
-  <view class="chart-container">
-    <view class="chart-title">本年训练时长</view>
-    <!-- 这里应该插入图表组件，显示yearlyData -->
   </view>
 </view>
