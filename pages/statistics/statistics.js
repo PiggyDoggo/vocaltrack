@@ -224,10 +224,27 @@ Page({
     // 清空画布
     ctx.clearRect(0, 0, width, height);
 
+    // 根据不同的时间维度设置刻度间隔
+    let scaleInterval;
+    switch(this.data.currentTab) {
+      case 'daily':
+        scaleInterval = 1; // 按日显示时以1小时为间隔
+        break;
+      case 'weekly':
+        scaleInterval = 5; // 按周显示时以5小时为间隔
+        break;
+      case 'monthly':
+        scaleInterval = 10; // 按月显示时以10小时为间隔
+        break;
+      default:
+        scaleInterval = 1;
+    }
+
     // 找出最大值来确定y轴刻度
     const maxValue = Math.max(...data, 1);
-    const yAxisMax = Math.ceil(maxValue / 5) * 5;
     const yAxisSteps = 5;
+    // 计算合适的最大刻度值，确保是间隔的整数倍
+    const yAxisMax = Math.ceil(maxValue / (scaleInterval * yAxisSteps)) * (scaleInterval * yAxisSteps);
 
     // 计算柱状图的尺寸
     const chartWidth = width - padding * 2;
@@ -235,13 +252,21 @@ Page({
     const barWidth = Math.min(30, (chartWidth / data.length) * 0.8);
     const barGap = (chartWidth - barWidth * data.length) / (data.length + 1);
 
+    // 绘制"小时"单位标签
+    ctx.save();
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#666';
+    ctx.font = '12px Arial';
+    ctx.fillText('单位：小时', width - padding, padding - 10);
+    ctx.restore();
+
     // 绘制y轴
     ctx.beginPath();
     ctx.strokeStyle = '#ddd';
     ctx.lineWidth = 1;
     for (let i = 0; i <= yAxisSteps; i++) {
       const y = padding + (chartHeight * i / yAxisSteps);
-      const value = Math.round(yAxisMax * (yAxisSteps - i) / yAxisSteps);
+      const value = (yAxisMax / yAxisSteps) * (yAxisSteps - i) / scaleInterval * scaleInterval;
       
       // 绘制横向网格线
       ctx.moveTo(padding, y);
@@ -252,7 +277,7 @@ Page({
       ctx.textAlign = 'right';
       ctx.fillStyle = '#666';
       ctx.font = '12px Arial';
-      ctx.fillText(value + '小时', padding - 5, y + 4);
+      ctx.fillText(Math.round(value), padding - 5, y + 4);
       ctx.restore();
     }
     ctx.stroke();
