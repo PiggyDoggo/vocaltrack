@@ -244,10 +244,12 @@ Page({
 
   // 显示备忘录弹窗
   showMemoModal: function() {
-    const record = this.data.filteredRecords[this.data.currentAudioIndex];
+    const index = this.data.currentAudioIndex;
+    const record = this.data.filteredRecords[index];
     this.setData({
       showMemoModal: true,
-      currentMemo: record.memo || ''
+      currentMemo: record.memo || '',
+      currentMemoIndex: index
     });
   },
 
@@ -260,13 +262,14 @@ Page({
 
   // 保存备忘录
   saveMemo: function() {
-    const index = this.data.currentMemoIndex;
+    const index = this.data.currentAudioIndex;
     const memo = this.data.currentMemo.trim();
     
     let records = wx.getStorageSync('allRecords') || [];
+    const record = this.data.filteredRecords[index];
     const recordIndex = records.findIndex(r => 
-      r.date === this.data.filteredRecords[index].date && 
-      r.time === this.data.filteredRecords[index].time
+      r.date === record.date && 
+      r.time === record.time
     );
 
     if (recordIndex !== -1) {
