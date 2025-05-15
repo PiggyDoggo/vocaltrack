@@ -4,9 +4,9 @@ const MAX_DAILY_RECORDS = 3;
 
 // 定义音乐门类数据
 const musicTypes = {
-  vocal: {
-    name: '声乐',
-    subtypes: ['美声', '民族', '流行', '戏曲']
+  unselected: {
+    name: '未选择',
+    subtypes: ['请选择音乐门类']
   },
   instrumental: {
     name: '器乐',
@@ -17,6 +17,10 @@ const musicTypes = {
       '二胡', '笛子', '扬琴', '吉他', '贝斯',
       '尤克里里', '手风琴', '民乐综合', '西洋乐综合'
     ]
+  },
+  vocal: {
+    name: '声乐',
+    subtypes: ['美声', '民族', '流行', '戏曲']
   }
 };
 
@@ -24,8 +28,8 @@ Page({
   data: {
     currentDate: '',
     musicTypeArray: [
-      ['器乐', '声乐'],
-      []
+      ['未选择', '器乐', '声乐'],
+      ['请选择音乐门类']
     ],
     musicTypeIndex: [0, 0],
     isRecording: false,
@@ -44,17 +48,6 @@ Page({
     this.initRecorderListeners();
     this.setCurrentDate();
     this.loadTodayRecords();
-    
-    // 初始化音乐门类选择器的子分类
-    this.setSubTypes(0);
-  },
-
-  // 设置子分类数据
-  setSubTypes: function(typeIndex) {
-    const subTypes = typeIndex === 0 ? musicTypes.instrumental.subtypes : musicTypes.vocal.subtypes;
-    this.setData({
-      'musicTypeArray[1]': subTypes
-    });
   },
 
   // 处理音乐门类选择改变
@@ -71,11 +64,36 @@ Page({
     const value = e.detail.value;
     
     if (column === 0) {
-      // 当第一列改变时，更新第二列的数据
-      this.setSubTypes(value);
-      // 重置第二列的选择
+      let subTypes;
+      switch(value) {
+        case 0:
+          subTypes = musicTypes.unselected.subtypes;
+          break;
+        case 1:
+          subTypes = musicTypes.instrumental.subtypes;
+          break;
+        case 2:
+          subTypes = musicTypes.vocal.subtypes;
+          break;
+      }
+
+      // 更新数据
       this.setData({
-        musicTypeIndex: [value, 0]
+        'musicTypeArray[1]': subTypes,
+        'musicTypeIndex[0]': value,
+        'musicTypeIndex[1]': 0
+      });
+
+      // 如果选择了"未选择"，显示提示
+      if (value === 0) {
+        wx.showToast({
+          title: '请选择音乐门类',
+          icon: 'none'
+        });
+      }
+    } else {
+      this.setData({
+        'musicTypeIndex[1]': value
       });
     }
   },
@@ -138,6 +156,24 @@ Page({
       });
       if (this.data.timer) {
         clearInterval(this.data.timer);
+      }
+      
+      // 检查是否选择了音乐门类
+      if (this.data.musicTypeIndex[0] === 0) {
+        wx.showModal({
+          title: '提示',
+          content: '请选择音乐门类后再保存录音',
+          showCancel: false,
+          success: () => {
+            // 清理录音文件
+            this.setData({
+              recordPath: '',
+              recordDuration: 0,
+              recordTimeText: '00:00:00'
+            });
+          }
+        });
+        return;
       }
       
       // 自动保存录音
@@ -220,6 +256,15 @@ Page({
     if (this.data.todayRecordsCount >= MAX_DAILY_RECORDS) {
       wx.showToast({
         title: '今日录音已达上限',
+        icon: 'none'
+      });
+      return;
+    }
+
+    // 检查是否选择了音乐门类
+    if (this.data.musicTypeIndex[0] === 0) {
+      wx.showToast({
+        title: '请先选择音乐门类',
         icon: 'none'
       });
       return;
