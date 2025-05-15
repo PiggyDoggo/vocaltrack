@@ -129,7 +129,7 @@ Page({
       this.startTimer();
     });
 
-    // 录音结束事件
+    // 录音结束事件，自动保存
     this.recorderManager.onStop((res) => {
       this.setData({
         isRecording: false,
@@ -138,6 +138,46 @@ Page({
       });
       if (this.data.timer) {
         clearInterval(this.data.timer);
+      }
+      
+      // 自动保存录音
+      const recordData = {
+        id: Date.now(),
+        date: this.data.currentDate,
+        musicType: `${this.data.musicTypeArray[0][this.data.musicTypeIndex[0]]} - ${this.data.musicTypeArray[1][this.data.musicTypeIndex[1]]}`,
+        duration: this.data.recordDuration,
+        path: res.tempFilePath,
+        createTime: new Date().toLocaleTimeString()
+      };
+
+      try {
+        let records = wx.getStorageSync('allRecords') || [];
+        records.unshift(recordData);
+        wx.setStorageSync('allRecords', records);
+
+        this.setData({
+          recordPath: '',
+          recordDuration: 0,
+          recordTimeText: '00:00:00',
+          todayRecordsCount: this.data.todayRecordsCount + 1
+        });
+
+        wx.showToast({
+          title: '保存成功',
+          icon: 'success',
+          duration: 2000,
+          success: () => {
+            setTimeout(() => {
+              wx.navigateBack();
+            }, 2000);
+          }
+        });
+      } catch (e) {
+        console.error('保存录音失败', e);
+        wx.showToast({
+          title: '保存失败',
+          icon: 'none'
+        });
       }
     });
 

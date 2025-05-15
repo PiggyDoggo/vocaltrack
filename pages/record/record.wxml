@@ -43,6 +43,4 @@
   <view class="records-today">
     <text class="records-count">今日已记录: {{todayRecordsCount}}/3</text>
   </view>
-
-  <button class="submit-btn" bindtap="submitRecord" disabled="{{!recordPath || todayRecordsCount >= 3}}">保存记录</button>
 </view>
