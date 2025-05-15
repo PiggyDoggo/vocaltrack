@@ -57,16 +57,25 @@
   border-radius: 2rpx;
 }
 
-.chart-container {
+.chart-scroll-container {
   width: 100%;
-  height: 600rpx;
+  height: 300px;
   margin: 20rpx 0;
+  background-color: #fff;
+}
+
+.chart-container {
+  height: 100%;
+  width: fit-content;
+  min-width: 100%;
   position: relative;
 }
 
 .statistics-chart {
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 300px;
+  display: block;
+  background-color: #fff;
 }
 
 .statistics-summary {

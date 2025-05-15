@@ -15,9 +15,11 @@
             bindtap="switchTab" data-tab="monthly">按月</view>
     </view>
 
-    <view class="chart-container">
-      <canvas type="2d" id="statisticsChart" class="statistics-chart"></canvas>
-    </view>
+    <scroll-view class="chart-scroll-container" scroll-x="true" enhanced="true" show-scrollbar="false">
+      <view class="chart-container">
+        <canvas type="2d" id="statisticsChart" class="statistics-chart"></canvas>
+      </view>
+    </scroll-view>
 
     <view class="statistics-summary">
       <view class="summary-item">
