@@ -3,7 +3,7 @@
   padding: 20rpx;
 }
 .form-item {
-  margin-bottom: 20rpx;
+  margin-bottom: 30rpx;
 }
 .picker {
   padding: 20rpx;
@@ -13,22 +13,181 @@
 slider {
   margin: 20rpx 0;
 }
+.date-text {
+  font-size: 32rpx;
+  color: #333;
+}
+.record-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 40rpx 0;
+}
+.timer {
+  font-size: 48rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  color: #333;
+}
+.record-controls {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20rpx 0;
+}
+.record-btn {
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+  color: white;
+  font-size: 28rpx;
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 107, 0.3);
+  position: relative;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.record-btn::after {
+  content: '';
+  position: absolute;
+  width: 60rpx;
+  height: 60rpx;
+  background: #fff;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.record-btn.recording {
+  background: linear-gradient(135deg, #FF4B4B, #FF6E6E);
+  animation: pulseRecord 1.5s infinite;
+}
+
+.record-btn.recording::after {
+  width: 40rpx;
+  height: 40rpx;
+  background: #FF4B4B;
+}
+
+@keyframes pulseRecord {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 6rpx 20rpx rgba(255, 107, 107, 0.3);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 8rpx 30rpx rgba(255, 107, 107, 0.5);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 6rpx 20rpx rgba(255, 107, 107, 0.3);
+  }
+}
+
+.record-status {
+  margin-top: 20rpx;
+  color: #666;
+  font-size: 28rpx;
+}
+
+.picker-section {
+  background: #fff;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #ddd;
+}
+
+.picker-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.picker-content {
+  font-size: 30rpx;
+  color: #666;
+  padding: 10rpx 0;
+}
+
 textarea {
   width: 100%;
-  height: 200rpx;
-  border: 1rpx solid #dddddd;
-  border-radius: 10rpx;
-  padding: 10rpx;
+  height: 160rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
 }
+
 input {
   width: 100%;
-  padding: 20rpx;
-  border: 1rpx solid #dddddd;
-  border-radius: 10rpx;
+  height: 80rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+}
+.records-today {
+  margin: 20rpx 0;
+  text-align: center;
+}
+.records-count {
+  color: #666;
+  font-size: 28rpx;
 }
 .submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+  color: white;
   margin-top: 40rpx;
-  background-color: #1aad19;
+  border: none;
+  border-radius: 8rpx;
+  padding: 20rpx 0;
+  font-size: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.2);
+}
+.submit-btn[disabled] {
+  background: #ccc;
+  color: #fff;
+  box-shadow: none;
+}
+.records-list {
+  margin-top: 40rpx;
+}
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 20rpx;
+  display: block;
+}
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+.record-info {
+  flex: 1;
+}
+.record-time {
+  font-size: 28rpx;
+  color: #333;
+  margin-right: 20rpx;
+}
+.record-duration {
+  font-size: 24rpx;
+  color: #666;
+}
+.play-btn {
+  min-width: 120rpx;
+  font-size: 24rpx;
+  margin: 0;
+  padding: 10rpx 20rpx;
+  background: #1296db;
   color: white;
 }
 .ad-container {

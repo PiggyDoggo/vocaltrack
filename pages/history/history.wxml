@@ -1,0 +1,125 @@
+<!--pages/history/history.wxml-->
+<view class="container">
+  <view class="history-section">
+    <view class="filter-section">
+      <radio-group class="filter-group" bindchange="onFilterChange">
+        <label class="filter-item">
+          <radio value="all" checked="{{filter === 'all'}}"/>全部
+        </label>
+        <label class="filter-item">
+          <radio value="vocal" checked="{{filter === 'vocal'}}"/>声乐
+        </label>
+        <label class="filter-item">
+          <radio value="instrument" checked="{{filter === 'instrument'}}"/>器乐
+        </label>
+      </radio-group>
+    </view>
+
+    <view class="record-list">
+      <view class="record-item" wx:for="{{filteredRecords}}" wx:key="index">
+        <view class="record-main">
+          <view class="record-header">
+            <text class="record-date">{{item.date}} {{item.time}}</text>
+          </view>
+          <view class="record-info">
+            <text class="profession">{{item.musicType}}</text>
+            <text class="duration">{{item.duration}}秒</text>
+          </view>
+          <view class="record-memo" wx:if="{{item.memo}}">
+            <text class="memo-text">{{item.memo}}</text>
+          </view>
+          <view class="record-control">
+            <button class="play-btn" catchtap="playHistoryRecord" data-index="{{index}}" data-path="{{item.path}}">
+              播放
+            </button>
+            <button class="memo-btn" catchtap="showMemoModal" data-index="{{index}}">
+              备忘录
+            </button>
+            <view class="delete-btn" catchtap="deleteRecord" data-index="{{index}}">
+              <text class="iconfont">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="no-records" wx:if="{{filteredRecords.length === 0}}">
+        <text>暂无练习记录</text>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 备忘录弹窗 -->
+<view class="memo-modal" wx:if="{{showMemoModal}}">
+  <view class="memo-content">
+    <view class="memo-header">
+      <text class="memo-title">练习备忘</text>
+    </view>
+    <view class="memo-body">
+      <textarea 
+        class="memo-input" 
+        placeholder="记录这段练习的要点、感受..." 
+        bindinput="bindMemoInput" 
+        value="{{currentMemo}}"
+        maxlength="500"
+      ></textarea>
+    </view>
+    <view class="memo-footer">
+      <button class="cancel-btn" bindtap="cancelMemo">取消</button>
+      <button class="save-btn" bindtap="saveMemo">保存</button>
+    </view>
+  </view>
+</view>
+
+<!-- 播放控制面板 -->
+<view class="player-panel {{showPlayerPanel ? 'show' : ''}}" wx:if="{{currentAudioPath}}">
+  <view class="player-progress">
+    <text class="time-text">{{currentTime}}</text>
+    <slider 
+      class="progress-bar" 
+      min="0" 
+      max="{{duration}}" 
+      value="{{progress}}"
+      activeColor="#FF6B6B"
+      backgroundColor="#EBEBEB"
+      block-size="12"
+      bindchange="onSliderChange"
+      bindchanging="onSliderChanging"
+    />
+    <text class="time-text">{{durationText}}</text>
+  </view>
+  <view class="player-controls">
+    <view class="control-btn" bindtap="rewind10">
+      <text class="iconfont">⏪</text>
+      <text class="btn-text">-10s</text>
+    </view>
+    <view class="control-btn play-pause-btn" bindtap="togglePlay">
+      <text class="iconfont">{{isPlaying ? '⏸' : '▶'}}</text>
+    </view>
+    <view class="control-btn" bindtap="forward10">
+      <text class="iconfont">⏩</text>
+      <text class="btn-text">+10s</text>
+    </view>
+  </view>
+</view>
+
+<!-- 评价弹窗 -->
+<view class="evaluation-modal" wx:if="{{showEvaluation}}">
+  <view class="evaluation-content">
+    <view class="evaluation-header">
+      <text class="evaluation-title">练习评价</text>
+    </view>
+    <view class="evaluation-body">
+      <textarea 
+        class="evaluation-input" 
+        placeholder="请记录练习感受、进步或需要改进的地方..." 
+        bindinput="bindCommentInput" 
+        value="{{comment}}"
+        maxlength="500"
+      ></textarea>
+    </view>
+    <view class="evaluation-footer">
+      <button class="cancel-btn" bindtap="cancelEvaluation">取消</button>
+      <button class="save-btn" bindtap="saveEvaluation">保存评价</button>
+    </view>
+  </view>
+</view> 

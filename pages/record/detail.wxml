@@ -1,0 +1,65 @@
+<!--pages/record/detail.wxml-->
+<view class="container">
+  <view class="form-item">
+    <view class="date-display">
+      今日日期：{{date}}
+    </view>
+  </view>
+  
+  <view class="form-item">
+    <text>训练时长：{{totalDuration}}分钟</text>
+  </view>
+
+  <view class="form-item profession-display">
+    <text class="section-title">专业类型：</text>
+    <text class="profession-text">{{specificProfession}}</text>
+  </view>
+
+  <!-- 录音功能区域 -->
+  <view class="form-item recording-section">
+    <view class="recording-info" wx:if="{{recording.path}}">
+      <view class="recording-duration">
+        <text class="duration-text">{{recording.duration || 0}}秒</text>
+      </view>
+      <view class="recording-controls">
+        <button class="play-btn" bindtap="playRecord">播放</button>
+        <button class="delete-btn" bindtap="deleteRecording">删除</button>
+      </view>
+    </view>
+    
+    <view class="recording-actions" wx:if="{{!recording.path}}">
+      <button class="record-btn {{isRecording ? 'recording' : ''}}" 
+              bindtap="toggleRecording" 
+              disabled="{{isRecording}}">
+        <text class="record-btn-text">{{isRecording ? '停止录音' : '开始录音'}}</text>
+        <text class="record-btn-duration" wx:if="{{isRecording}}">{{recordingDuration}}秒</text>
+      </button>
+      <text class="recording-tip" wx:if="{{isRecording}}">正在录音...</text>
+      <text class="recording-limit">单次录音最长3小时</text>
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="submitRecord" wx:if="{{recording.path}}">保存记录</button>
+</view>
+
+<!-- 评价弹窗 -->
+<view class="evaluation-modal" wx:if="{{showEvaluation}}">
+  <view class="evaluation-content">
+    <view class="evaluation-header">
+      <text class="evaluation-title">练习评价</text>
+    </view>
+    <view class="evaluation-body">
+      <textarea 
+        class="evaluation-input" 
+        placeholder="请记录今天的练习感受、进步或需要改进的地方..." 
+        bindinput="bindCommentInput" 
+        value="{{comment}}"
+        maxlength="500"
+      ></textarea>
+    </view>
+    <view class="evaluation-footer">
+      <button class="cancel-btn" bindtap="cancelEvaluation">取消</button>
+      <button class="save-btn" bindtap="saveEvaluation">保存评价</button>
+    </view>
+  </view>
+</view> 

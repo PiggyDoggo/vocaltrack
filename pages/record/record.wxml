@@ -1,25 +1,39 @@
 <!--pages/record/record.wxml-->
 <view class="container">
   <view class="form-item">
-    <picker mode="date" value="{{date}}" start="2023-01-01" end="2023-12-31" bindchange="bindDateChange">
-      <view class="picker">
-        日期：{{date}}
-      </view>
-    </picker>
+    <text class="date-text">日期：{{currentDate}}</text>
   </view>
+
+  <view class="record-section">
+    <view class="timer">{{recordTimeText}}</view>
+    <view class="record-controls">
+      <button class="record-btn {{isRecording ? 'recording' : ''}}" bindtap="handleRecordTap">
+        {{isRecording ? '停止录音' : '开始录音'}}
+      </button>
+    </view>
+    <view class="record-status" wx:if="isRecording">
+      正在录音...{{recordDuration}}秒
+    </view>
+  </view>
+
   <view class="form-item">
-    <slider min="0" max="480" step="5" value="{{time}}" show-value bindchange="bindTimeChange"/>
-    <text>训练时长：{{time}}分钟</text>
+    <view class="picker-section">
+      <text class="picker-label">音乐门类：</text>
+      <picker mode="multiSelector" 
+        bindchange="bindMusicTypeChange" 
+        bindcolumnchange="bindMusicColumnChange" 
+        value="{{musicTypeIndex}}" 
+        range="{{musicTypeArray}}">
+        <view class="picker-content">
+          {{musicTypeArray[0][musicTypeIndex[0]]}} - {{musicTypeArray[1][musicTypeIndex[1]]}}
+        </view>
+      </picker>
+    </view>
   </view>
-  <view class="form-item">
-    <textarea placeholder="写下你的训练评价或注释" bindinput="bindCommentInput" value="{{comment}}"></textarea>
+
+  <view class="records-today">
+    <text class="records-count">今日已记录: {{todayRecordsCount}}/3</text>
   </view>
-  <view class="form-item">
-    <input placeholder="音乐专业（如声乐、钢琴等）" bindinput="bindMusicProfessionInput" value="{{musicProfession}}"/>
-  </view>
-  <button class="submit-btn" bindtap="submitRecord">保存记录</button>
-  <view class="ad-container" wx:if="{{showAd}}">
-    <!-- 这里可以放置广告内容 -->
-    <text>广告内容</text>
-  </view>
+
+  <button class="submit-btn" bindtap="submitRecord" disabled="{{!recordPath || todayRecordsCount >= 3}}">保存记录</button>
 </view>

@@ -1,0 +1,26 @@
+<!--pages/record/index.wxml-->
+<view class="container">
+  <view class="header">
+    <view class="date-display">
+      今日日期：{{date}} 今日已记录：{{todayRecordsCount}}/3
+    </view>
+  </view>
+
+  <view class="form-item music-type">
+    <text class="section-title">选择专业：</text>
+    <picker mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range="{{multiArray}}">
+      <view class="picker">
+        当前选择：{{multiArray[0][multiIndex[0]]}} - {{multiArray[1][multiIndex[1]]}}
+      </view>
+    </picker>
+  </view>
+
+  <view class="add-record-section">
+    <button class="add-btn" bindtap="addNewRecord" disabled="{{todayRecordsCount >= 3 || !selectedProfession}}">
+      <text class="add-icon">+</text>
+      <text>添加记录</text>
+    </button>
+    <text class="tip-text" wx:if="{{!selectedProfession}}">请先选择专业</text>
+    <text class="tip-text" wx:elif="{{todayRecordsCount >= 3}}">今日记录已达上限</text>
+  </view>
+</view> 

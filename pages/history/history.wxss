@@ -1,0 +1,321 @@
+/* pages/history/history.wxss */
+.container {
+  padding: 6rpx;
+  padding-bottom: 180rpx;
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;  /* 防止横向滚动 */
+}
+
+.filter-section {
+  margin-bottom: 12rpx;
+  background: #fff;
+  padding: 8rpx;
+  border-radius: 8rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-group {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-item {
+  font-size: 24rpx;
+  color: #333;
+  padding: 0 4rpx;
+}
+
+.record-list {
+  margin-top: 12rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.record-main {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.record-item {
+  background: #fff;
+  border-radius: 8rpx;
+  padding: 8rpx;
+  margin-bottom: 8rpx;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;  /* 防止内容溢出 */
+}
+
+.record-header {
+  margin-bottom: 6rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.record-control {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6rpx;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 6rpx;
+  padding-right: 2rpx;  /* 右侧留一点空间 */
+}
+
+.play-btn, .memo-btn {
+  min-width: 56rpx;
+  font-size: 20rpx;
+  margin: 0;
+  padding: 4rpx 6rpx;
+  white-space: nowrap;
+  flex: none;
+  border-radius: 4rpx;
+}
+
+.delete-btn {
+  width: 36rpx;
+  height: 36rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #FF9F43;
+  border-radius: 50%;
+  margin: 0;
+  padding: 0;
+  flex: none;
+}
+
+.delete-btn .iconfont {
+  font-size: 20rpx;
+  color: white;
+}
+
+.record-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 6rpx 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profession {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: bold;
+  flex-shrink: 1;  /* 允许文字在需要时缩小 */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.duration {
+  font-size: 20rpx;
+  color: #666;
+  flex-shrink: 0;  /* 防止时长被压缩 */
+  margin-left: 8rpx;
+}
+
+.record-date {
+  font-size: 20rpx;
+  color: #666;
+}
+
+.record-memo {
+  background: #f8f8f8;
+  padding: 8rpx;
+  border-radius: 6rpx;
+  margin: 8rpx 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.memo-text {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.3;
+  word-break: break-all;  /* 允许在任意字符间断行 */
+}
+
+/* 播放控制面板样式 */
+.player-panel {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  padding: 16rpx;
+  box-shadow: 0 -2rpx 10rpx rgba(0,0,0,0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.player-panel.show {
+  transform: translateY(0);
+}
+
+.player-progress {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.progress-bar {
+  flex: 1;
+  margin: 0 20rpx;
+}
+
+.time-text {
+  font-size: 24rpx;
+  color: #666;
+  min-width: 80rpx;
+}
+
+.player-controls {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0 20rpx;
+}
+
+.control-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10rpx;
+  flex: 1;
+}
+
+.play-pause-btn {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  background: #FF9F43;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.play-pause-btn .iconfont {
+  color: white;
+  font-size: 40rpx;
+}
+
+.control-btn .iconfont {
+  font-size: 36rpx;
+  color: #333;
+}
+
+.control-btn .btn-text {
+  font-size: 20rpx;
+  color: #666;
+  margin-top: 4rpx;
+}
+
+/* 评价弹窗样式 */
+.evaluation-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.evaluation-content {
+  background: white;
+  width: 80%;
+  border-radius: 12rpx;
+  padding: 30rpx;
+}
+
+.evaluation-header {
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.evaluation-title {
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.evaluation-input {
+  width: 100%;
+  height: 200rpx;
+  border: 1rpx solid #ddd;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.evaluation-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30rpx;
+  gap: 20rpx;
+}
+
+.cancel-btn, .save-btn {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  font-size: 28rpx;
+}
+
+.cancel-btn {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.save-btn {
+  background: #FF9F43;
+  color: white;
+}
+
+/* 录音列表样式 */
+.record-recordings {
+  margin-top: 16rpx;
+  border-top: 1rpx solid #eee;
+  padding-top: 16rpx;
+}
+
+.record-recordings .recording-item {
+  display: flex;
+  align-items: center;
+  padding: 10rpx 0;
+  font-size: 24rpx;
+  color: #666;
+}
+
+.recording-index {
+  margin-right: 20rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.recording-duration {
+  flex: 1;
+}
+
+.recording-control {
+  display: flex;
+  gap: 10rpx;
+}
+
+.recording-control .action-btn {
+  padding: 6rpx 12rpx;
+} 

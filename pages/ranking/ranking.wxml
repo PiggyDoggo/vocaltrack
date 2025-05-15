@@ -1,0 +1,53 @@
+<!--pages/ranking/ranking.wxml-->
+<view class="container">
+  <view class="tab-header">
+    <view class="tab-item {{currentTab === 'vocal' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="vocal">
+      声乐排行
+    </view>
+    <view class="tab-item {{currentTab === 'instrument' ? 'active' : ''}}" 
+          bindtap="switchTab" 
+          data-tab="instrument">
+      器乐排行
+    </view>
+  </view>
+
+  <view class="ranking-list" wx:if="{{currentTab === 'vocal'}}">
+    <view class="list-header">
+      <text>本周声乐练习排行</text>
+    </view>
+    <view class="no-data" wx:if="{{vocalRanking.length === 0}}">
+      暂无数据
+    </view>
+    <view class="ranking-item" wx:for="{{vocalRanking}}" wx:key="name">
+      <view class="rank-number {{item.rank <= 3 ? 'top-' + item.rank : ''}}">{{item.rank}}</view>
+      <view class="profession-info">
+        <view class="profession-name">{{item.name}}</view>
+        <view class="practice-stats">
+          <text>总时长：{{item.totalTime}}分钟</text>
+          <text>练习次数：{{item.count}}次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="ranking-list" wx:if="{{currentTab === 'instrument'}}">
+    <view class="list-header">
+      <text>本周器乐练习排行</text>
+    </view>
+    <view class="no-data" wx:if="{{instrumentRanking.length === 0}}">
+      暂无数据
+    </view>
+    <view class="ranking-item" wx:for="{{instrumentRanking}}" wx:key="name">
+      <view class="rank-number {{item.rank <= 3 ? 'top-' + item.rank : ''}}">{{item.rank}}</view>
+      <view class="profession-info">
+        <view class="profession-name">{{item.name}}</view>
+        <view class="practice-stats">
+          <text>总时长：{{item.totalTime}}分钟</text>
+          <text>练习次数：{{item.count}}次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view> 
