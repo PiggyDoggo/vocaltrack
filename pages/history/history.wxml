@@ -16,7 +16,7 @@
     </view>
 
     <view class="record-list">
-      <view class="record-item" wx:for="{{filteredRecords}}" wx:key="index">
+      <view class="record-item" wx:for="{{filteredRecords}}" wx:key="index" bindtap="onTapRecord" data-index="{{index}}">
         <view class="record-main">
           <view class="record-header">
             <text class="record-date">{{item.date}} {{item.time}}</text>
@@ -28,22 +28,55 @@
           <view class="record-memo" wx:if="{{item.memo}}">
             <text class="memo-text">{{item.memo}}</text>
           </view>
-          <view class="record-control">
-            <button class="play-btn" catchtap="playHistoryRecord" data-index="{{index}}" data-path="{{item.path}}">
-              播放
-            </button>
-            <button class="memo-btn" catchtap="showMemoModal" data-index="{{index}}">
-              备忘录
-            </button>
-            <view class="delete-btn" catchtap="deleteRecord" data-index="{{index}}">
-              <text class="iconfont">🗑️</text>
-            </view>
-          </view>
         </view>
       </view>
       <view class="no-records" wx:if="{{filteredRecords.length === 0}}">
         <text>暂无练习记录</text>
       </view>
+    </view>
+  </view>
+</view>
+
+<!-- 播放控制面板 -->
+<view class="player-panel {{showPlayerPanel ? 'show' : ''}}" wx:if="{{currentAudioPath}}">
+  <view class="record-actions">
+    <view class="action-btn play-btn" bindtap="togglePlay">
+      <text class="iconfont">{{isPlaying ? '⏸' : '▶'}}</text>
+      <text class="btn-text">{{isPlaying ? '暂停' : '播放'}}</text>
+    </view>
+    <view class="action-btn memo-btn" bindtap="showMemoModal">
+      <text class="iconfont">📝</text>
+      <text class="btn-text">备忘录</text>
+    </view>
+    <view class="action-btn delete-btn" catchtap="deleteRecord">
+      <text class="iconfont">🗑️</text>
+    </view>
+  </view>
+
+  <view class="player-progress">
+    <text class="time-text">{{currentTime}}</text>
+    <slider 
+      class="progress-bar" 
+      min="0" 
+      max="{{duration}}" 
+      value="{{progress}}"
+      activeColor="#FF9F43"
+      backgroundColor="#EBEBEB"
+      block-size="12"
+      bindchange="onSliderChange"
+      bindchanging="onSliderChanging"
+    />
+    <text class="time-text">{{durationText}}</text>
+  </view>
+  
+  <view class="player-controls">
+    <view class="control-btn" bindtap="rewind10">
+      <text class="iconfont">⏪</text>
+      <text class="btn-text">-10s</text>
+    </view>
+    <view class="control-btn forward-btn" bindtap="forward10">
+      <text class="iconfont">⏩</text>
+      <text class="btn-text">+10s</text>
     </view>
   </view>
 </view>
@@ -66,38 +99,6 @@
     <view class="memo-footer">
       <button class="cancel-btn" bindtap="cancelMemo">取消</button>
       <button class="save-btn" bindtap="saveMemo">保存</button>
-    </view>
-  </view>
-</view>
-
-<!-- 播放控制面板 -->
-<view class="player-panel {{showPlayerPanel ? 'show' : ''}}" wx:if="{{currentAudioPath}}">
-  <view class="player-progress">
-    <text class="time-text">{{currentTime}}</text>
-    <slider 
-      class="progress-bar" 
-      min="0" 
-      max="{{duration}}" 
-      value="{{progress}}"
-      activeColor="#FF6B6B"
-      backgroundColor="#EBEBEB"
-      block-size="12"
-      bindchange="onSliderChange"
-      bindchanging="onSliderChanging"
-    />
-    <text class="time-text">{{durationText}}</text>
-  </view>
-  <view class="player-controls">
-    <view class="control-btn" bindtap="rewind10">
-      <text class="iconfont">⏪</text>
-      <text class="btn-text">-10s</text>
-    </view>
-    <view class="control-btn play-pause-btn" bindtap="togglePlay">
-      <text class="iconfont">{{isPlaying ? '⏸' : '▶'}}</text>
-    </view>
-    <view class="control-btn" bindtap="forward10">
-      <text class="iconfont">⏩</text>
-      <text class="btn-text">+10s</text>
     </view>
   </view>
 </view>

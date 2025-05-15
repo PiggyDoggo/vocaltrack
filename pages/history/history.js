@@ -183,17 +183,22 @@ Page({
     this.data.innerAudioContext.seek(newTime);
   },
 
-  // 点击记录，显示/编辑评价
+  // 点击记录项
   onTapRecord: function(e) {
-    const recordId = e.currentTarget.dataset.id;
-    const record = this.data.records.find(r => r.id === recordId);
-    if (record) {
-      this.setData({
-        currentRecord: record,
-        comment: record.comment || '',
-        showEvaluation: true
-      });
-    }
+    const index = e.currentTarget.dataset.index;
+    const record = this.data.filteredRecords[index];
+    
+    this.setData({
+      currentAudioIndex: index,
+      currentAudioPath: record.path,
+      showPlayerPanel: true,
+      isPlaying: false
+    });
+
+    // 准备音频
+    const innerAudioContext = this.data.innerAudioContext;
+    innerAudioContext.stop();
+    innerAudioContext.src = record.path;
   },
 
   // 保存评价
@@ -238,12 +243,10 @@ Page({
   },
 
   // 显示备忘录弹窗
-  showMemoModal: function(e) {
-    const index = e.currentTarget.dataset.index;
-    const record = this.data.filteredRecords[index];
+  showMemoModal: function() {
+    const record = this.data.filteredRecords[this.data.currentAudioIndex];
     this.setData({
       showMemoModal: true,
-      currentMemoIndex: index,
       currentMemo: record.memo || ''
     });
   },
@@ -295,8 +298,8 @@ Page({
   },
 
   // 删除记录
-  deleteRecord: function(e) {
-    const index = e.currentTarget.dataset.index;
+  deleteRecord: function() {
+    const index = this.data.currentAudioIndex;
     wx.showModal({
       title: '确认删除',
       content: '确定要删除这条记录吗？',
@@ -317,15 +320,14 @@ Page({
           records.splice(index, 1);
           wx.setStorageSync('allRecords', records);
           
-          // 如果删除的是当前播放的音频，停止播放
-          if (index === this.data.currentAudioIndex) {
-            this.data.innerAudioContext.stop();
-            this.setData({
-              currentAudioPath: '',
-              currentAudioIndex: -1,
-              isPlaying: false
-            });
-          }
+          // 停止播放并隐藏面板
+          this.data.innerAudioContext.stop();
+          this.setData({
+            currentAudioPath: '',
+            currentAudioIndex: -1,
+            isPlaying: false,
+            showPlayerPanel: false
+          });
           
           this.loadRecords();
           
