@@ -11,9 +11,6 @@
         {{isRecording ? '停止录音' : '开始录音'}}
       </button>
     </view>
-    <view class="record-status" wx:if="isRecording">
-      正在录音...{{recordDuration}}秒
-    </view>
   </view>
 
   <view class="form-item">
