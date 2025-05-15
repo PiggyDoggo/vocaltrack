@@ -51,6 +51,46 @@ slider {
   transition: all 0.3s ease;
 }
 
+.dual-buttons {
+  display: flex;
+  gap: 20rpx;
+  justify-content: center;
+  width: 100%;
+}
+
+.control-btn {
+  width: 140rpx;
+  height: 140rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 28rpx;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.pause-btn {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  box-shadow: 0 6rpx 20rpx rgba(76, 175, 80, 0.3);
+}
+
+.pause-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 15rpx rgba(76, 175, 80, 0.2);
+}
+
+.stop-btn {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
+  box-shadow: 0 6rpx 20rpx rgba(255, 107, 107, 0.3);
+}
+
+.stop-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 4rpx 15rpx rgba(255, 107, 107, 0.2);
+}
+
 .record-btn::after {
   content: '';
   position: absolute;

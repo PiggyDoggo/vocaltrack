@@ -7,9 +7,21 @@
   <view class="record-section">
     <view class="timer">{{recordTimeText}}</view>
     <view class="record-controls">
-      <button class="record-btn {{isRecording ? 'recording' : ''}}" bindtap="handleRecordTap">
-        {{isRecording ? '停止录音' : '开始录音'}}
-      </button>
+      <block wx:if="{{!isRecording}}">
+        <button class="record-btn" bindtap="handleRecordTap">
+          开始录音
+        </button>
+      </block>
+      <block wx:else>
+        <view class="dual-buttons">
+          <button class="control-btn pause-btn" bindtap="handlePauseTap">
+            {{isPaused ? '继续' : '暂停'}}
+          </button>
+          <button class="control-btn stop-btn" bindtap="handleStopTap">
+            结束
+          </button>
+        </view>
+      </block>
     </view>
   </view>
 

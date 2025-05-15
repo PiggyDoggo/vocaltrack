@@ -29,6 +29,7 @@ Page({
     ],
     musicTypeIndex: [0, 0],
     isRecording: false,
+    isPaused: false,
     recordPath: '',
     recordDuration: 0,
     recordTimeText: '00:00:00',
@@ -84,7 +85,7 @@ Page({
     if (this.data.timer) {
       clearInterval(this.data.timer);
     }
-    if (this.data.isRecording) {
+    if (this.data.isRecording && !this.data.isPaused) {
       this.recorderManager.stop();
     }
   },
@@ -104,7 +105,26 @@ Page({
     this.recorderManager.onStart(() => {
       this.setData({
         isRecording: true,
-        recordDuration: 0
+        isPaused: false,
+        recordDuration: this.data.recordDuration || 0
+      });
+      this.startTimer();
+    });
+
+    // 录音暂停事件
+    this.recorderManager.onPause(() => {
+      this.setData({
+        isPaused: true
+      });
+      if (this.data.timer) {
+        clearInterval(this.data.timer);
+      }
+    });
+
+    // 录音继续事件
+    this.recorderManager.onResume(() => {
+      this.setData({
+        isPaused: false
       });
       this.startTimer();
     });
@@ -113,6 +133,7 @@ Page({
     this.recorderManager.onStop((res) => {
       this.setData({
         isRecording: false,
+        isPaused: false,
         recordPath: res.tempFilePath
       });
       if (this.data.timer) {
@@ -127,7 +148,8 @@ Page({
         icon: 'none'
       });
       this.setData({
-        isRecording: false
+        isRecording: false,
+        isPaused: false
       });
       if (this.data.timer) {
         clearInterval(this.data.timer);
@@ -139,7 +161,7 @@ Page({
     const timer = setInterval(() => {
       let duration = this.data.recordDuration + 1;
       if (duration >= MAX_RECORD_TIME) {
-        this.handleRecordTap();
+        this.handleStopTap();
         return;
       }
       const hours = Math.floor(duration / 3600);
@@ -154,26 +176,34 @@ Page({
   },
 
   handleRecordTap: function () {
-    if (this.data.isRecording) {
-      this.recorderManager.stop();
-    } else {
-      // 检查是否达到每日记录上限
-      if (this.data.todayRecordsCount >= MAX_DAILY_RECORDS) {
-        wx.showToast({
-          title: '今日录音已达上限',
-          icon: 'none'
-        });
-        return;
-      }
-      
-      this.recorderManager.start({
-        duration: MAX_RECORD_TIME * 1000,
-        sampleRate: 44100,
-        numberOfChannels: 1,
-        encodeBitRate: 192000,
-        format: 'mp3'
+    // 检查是否达到每日记录上限
+    if (this.data.todayRecordsCount >= MAX_DAILY_RECORDS) {
+      wx.showToast({
+        title: '今日录音已达上限',
+        icon: 'none'
       });
+      return;
     }
+    
+    this.recorderManager.start({
+      duration: MAX_RECORD_TIME * 1000,
+      sampleRate: 44100,
+      numberOfChannels: 1,
+      encodeBitRate: 192000,
+      format: 'mp3'
+    });
+  },
+
+  handlePauseTap: function() {
+    if (this.data.isPaused) {
+      this.recorderManager.resume();
+    } else {
+      this.recorderManager.pause();
+    }
+  },
+
+  handleStopTap: function() {
+    this.recorderManager.stop();
   },
 
   loadTodayRecords: function () {
@@ -202,40 +232,37 @@ Page({
       return;
     }
 
-    // 获取选中的音乐门类
-    const mainType = this.data.musicTypeArray[0][this.data.musicTypeIndex[0]];
-    const subType = this.data.musicTypeArray[1][this.data.musicTypeIndex[1]];
-    const musicType = `${mainType}-${subType}`;
-
-    // 保存录音记录
-    const now = new Date();
-    const time = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
-    const newRecord = {
+    const recordData = {
+      id: Date.now(),
       date: this.data.currentDate,
-      time: time,
+      musicType: `${this.data.musicTypeArray[0][this.data.musicTypeIndex[0]]} - ${this.data.musicTypeArray[1][this.data.musicTypeIndex[1]]}`,
       duration: this.data.recordDuration,
       path: this.data.recordPath,
-      musicType: musicType
+      createTime: new Date().toLocaleTimeString()
     };
 
-    let records = wx.getStorageSync('allRecords') || [];
-    records.push(newRecord);
-    wx.setStorageSync('allRecords', records);
+    try {
+      let records = wx.getStorageSync('allRecords') || [];
+      records.unshift(recordData);
+      wx.setStorageSync('allRecords', records);
 
-    // 更新页面数据
-    this.loadTodayRecords();
+      this.setData({
+        recordPath: '',
+        recordDuration: 0,
+        recordTimeText: '00:00:00',
+        todayRecordsCount: this.data.todayRecordsCount + 1
+      });
 
-    // 重置表单
-    this.setData({
-      recordPath: '',
-      recordDuration: 0,
-      recordTimeText: '00:00:00'
-    });
-
-    wx.showToast({
-      title: '保存成功',
-      icon: 'success'
-    });
+      wx.showToast({
+        title: '保存成功',
+        icon: 'success'
+      });
+    } catch (e) {
+      console.error('保存录音失败', e);
+      wx.showToast({
+        title: '保存失败',
+        icon: 'none'
+      });
+    }
   }
 });
