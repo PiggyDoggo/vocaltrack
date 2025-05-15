@@ -283,6 +283,15 @@ Page({
     const index = e.currentTarget.dataset.index;
     const record = this.data.filteredRecords[index];
     
+    // 如果点击的是当前正在播放的记录，则切换播放面板的显示状态
+    if (index === this.data.currentAudioIndex) {
+      this.setData({
+        showPlayerPanel: !this.data.showPlayerPanel
+      });
+      return;
+    }
+
+    // 如果点击的是新的记录，则显示播放面板并准备音频
     this.setData({
       currentAudioIndex: index,
       currentAudioPath: record.path,
