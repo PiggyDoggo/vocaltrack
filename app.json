@@ -7,7 +7,7 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "音乐训练助手",
+    "navigationBarTitleText": "乐分乐秒",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {
