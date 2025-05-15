@@ -1,0 +1,39 @@
+/* pages/record/record.wxss */
+.container {
+  padding: 20rpx;
+}
+.form-item {
+  margin-bottom: 20rpx;
+}
+.picker {
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border-radius: 10rpx;
+}
+slider {
+  margin: 20rpx 0;
+}
+textarea {
+  width: 100%;
+  height: 200rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 10rpx;
+  padding: 10rpx;
+}
+input {
+  width: 100%;
+  padding: 20rpx;
+  border: 1rpx solid #dddddd;
+  border-radius: 10rpx;
+}
+.submit-btn {
+  margin-top: 40rpx;
+  background-color: #1aad19;
+  color: white;
+}
+.ad-container {
+  margin-top: 40rpx;
+  padding: 20rpx;
+  background-color: #f0f0f0;
+  text-align: center;
+}
