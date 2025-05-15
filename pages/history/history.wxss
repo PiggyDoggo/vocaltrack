@@ -1,17 +1,22 @@
 /* pages/history/history.wxss */
 .container {
-  padding: 4rpx;
+  padding: 4rpx 20rpx;
   padding-bottom: 180rpx;
   box-sizing: border-box;
   width: 100%;
   overflow-x: hidden;  /* 防止横向滚动 */
 }
 
+.history-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .filter-section {
-  margin-bottom: 8rpx;
+  margin-bottom: 15rpx;
   background: #fff;
-  padding: 6rpx;
-  border-radius: 6rpx;
+  padding: 16rpx;
+  border-radius: 8rpx;
   width: 100%;
   box-sizing: border-box;
 }
@@ -24,13 +29,12 @@
 }
 
 .filter-item {
-  font-size: 22rpx;
+  font-size: 26rpx;
   color: #333;
-  padding: 0 2rpx;
+  padding: 0 20rpx;
 }
 
 .record-list {
-  margin-top: 8rpx;
   width: 100%;
   box-sizing: border-box;
 }
@@ -38,8 +42,8 @@
 .record-item {
   background: #fff;
   border-radius: 8rpx;
-  padding: 16rpx;
-  margin-bottom: 10rpx;
+  padding: 20rpx;
+  margin-bottom: 12rpx;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;
@@ -88,6 +92,11 @@
   display: none;
 }
 
+.record-main {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .record-info {
   display: flex;
   justify-content: space-between;
@@ -95,18 +104,17 @@
   margin: 8rpx 0;
   width: 100%;
   box-sizing: border-box;
-  gap: 4rpx;
 }
 
 .profession {
   font-size: 32rpx;
   color: #333;
   font-weight: bold;
-  flex-shrink: 1;
+  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: calc(100% - 80rpx);
+  padding-right: 20rpx;
 }
 
 .duration {
