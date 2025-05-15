@@ -25,7 +25,7 @@
             <text class="profession">{{item.musicType}}</text>
             <text class="duration">{{item.duration}}秒</text>
           </view>
-          <view class="record-memo" wx:if="{{item.memo}}">
+          <view class="record-memo" wx:if="{{item.memo && item.memo.trim()}}">
             <text class="memo-text">{{item.memo}}</text>
           </view>
         </view>
@@ -74,6 +74,10 @@
       <text class="iconfont">⏪</text>
       <text class="btn-text">-10s</text>
     </view>
+    <view class="control-btn mark-btn" bindtap="markCurrentTime">
+      <text class="iconfont">🔖</text>
+      <text class="btn-text">标记时间</text>
+    </view>
     <view class="control-btn forward-btn" bindtap="forward10">
       <text class="iconfont">⏩</text>
       <text class="btn-text">+10s</text>
@@ -88,13 +92,26 @@
       <text class="memo-title">练习备忘</text>
     </view>
     <view class="memo-body">
-      <textarea 
-        class="memo-input" 
-        placeholder="记录这段练习的要点、感受..." 
-        bindinput="bindMemoInput" 
-        value="{{currentMemo}}"
-        maxlength="500"
-      ></textarea>
+      <view class="memo-content-wrapper">
+        <textarea 
+          class="memo-input" 
+          placeholder="记录这段练习的要点、感受..." 
+          bindinput="bindMemoInput" 
+          value="{{currentMemo}}"
+          maxlength="500"
+        ></textarea>
+        <view class="memo-timestamps">
+          <view 
+            class="timestamp-item" 
+            wx:for="{{timestamps}}" 
+            wx:key="index"
+            data-time="{{item}}"
+            bindtap="onTimestampClick"
+          >
+            {{item}}
+          </view>
+        </view>
+      </view>
     </view>
     <view class="memo-footer">
       <button class="cancel-btn" bindtap="cancelMemo">取消</button>

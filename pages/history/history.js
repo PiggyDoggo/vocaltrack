@@ -17,7 +17,9 @@ Page({
     showMemoModal: false,
     currentMemo: '',
     currentMemoIndex: -1,
-    showPlayerPanel: false
+    showPlayerPanel: false,
+    timestampRegex: /\[\d{2}:\d{2}:\d{2}\]/g,
+    timestamps: []
   },
 
   onLoad: function (options) {
@@ -68,11 +70,104 @@ Page({
     this.setData({ innerAudioContext });
   },
 
-  // 格式化时间
+  // 格式化时间（支持小时）
   formatTime: function(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    if (typeof seconds !== 'number') return '00:00:00';
+    
+    seconds = Math.floor(seconds);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  },
+
+  // 解析时间戳为秒数
+  parseTimestamp: function(timestamp) {
+    const matches = timestamp.match(/\[(\d{2}):(\d{2}):(\d{2})\]/);
+    if (matches) {
+      const [_, hours, minutes, seconds] = matches;
+      return parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+    }
+    return 0;
+  },
+
+  // 提取备忘录中的时间戳
+  extractTimestamps: function(memo) {
+    if (!memo) return [];
+    const matches = memo.match(this.data.timestampRegex);
+    return matches || [];
+  },
+
+  // 标记当前时间点
+  markCurrentTime: function() {
+    if (!this.data.innerAudioContext) return;
+    
+    const currentTime = this.data.innerAudioContext.currentTime;
+    const timestamp = `[${this.formatTime(currentTime)}]`;
+    
+    // 如果备忘录弹窗未打开，先打开它
+    if (!this.data.showMemoModal) {
+      const index = this.data.currentAudioIndex;
+      const record = this.data.filteredRecords[index];
+      let memo = record.memo || '';
+      
+      // 添加时间戳
+      if (!memo) {
+        memo = timestamp;
+      } else {
+        if (memo.endsWith('\n')) {
+          memo += timestamp;
+        } else {
+          memo += '\n' + timestamp;
+        }
+      }
+      
+      const timestamps = this.extractTimestamps(memo);
+      
+      this.setData({
+        showMemoModal: true,
+        currentMemo: memo,
+        currentMemoIndex: index,
+        timestamps: timestamps
+      });
+    } else {
+      // 如果备忘录已经打开，直接添加时间戳
+      let memo = this.data.currentMemo;
+      if (!memo) {
+        memo = timestamp;
+      } else {
+        if (memo.endsWith('\n')) {
+          memo += timestamp;
+        } else {
+          memo += '\n' + timestamp;
+        }
+      }
+      
+      const timestamps = this.extractTimestamps(memo);
+      
+      this.setData({
+        currentMemo: memo,
+        timestamps: timestamps
+      });
+    }
+  },
+
+  // 点击时间戳跳转
+  onTimestampClick: function(e) {
+    const timestamp = e.currentTarget.dataset.time;
+    const seconds = this.parseTimestamp(timestamp);
+    
+    if (this.data.innerAudioContext && seconds >= 0) {
+      this.data.innerAudioContext.seek(seconds);
+      
+      // 如果当前是暂停状态，自动开始播放
+      if (!this.data.isPlaying) {
+        this.data.innerAudioContext.play();
+        this.setData({
+          isPlaying: true
+        });
+      }
+    }
   },
 
   // 加载记录
@@ -246,17 +341,25 @@ Page({
   showMemoModal: function() {
     const index = this.data.currentAudioIndex;
     const record = this.data.filteredRecords[index];
+    const memo = record.memo || '';
+    const timestamps = this.extractTimestamps(memo);
+    
     this.setData({
       showMemoModal: true,
-      currentMemo: record.memo || '',
-      currentMemoIndex: index
+      currentMemo: memo,
+      currentMemoIndex: index,
+      timestamps: timestamps
     });
   },
 
   // 备忘录输入
   bindMemoInput: function(e) {
+    const memo = e.detail.value;
+    const timestamps = this.extractTimestamps(memo);
+    
     this.setData({
-      currentMemo: e.detail.value
+      currentMemo: memo,
+      timestamps: timestamps
     });
   },
 
