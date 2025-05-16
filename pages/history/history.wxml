@@ -93,16 +93,27 @@
     </view>
     <view class="memo-body">
       <view class="memo-content-wrapper">
-        <textarea 
-          class="memo-input" 
-          placeholder="记录这段练习的要点、感受..." 
-          bindinput="bindMemoInput" 
-          value="{{currentMemo}}"
-          maxlength="500"
-        ></textarea>
+        <view class="memo-toolbar" wx:if="{{!isEditingMemo}}">
+          <view class="edit-btn" bindtap="toggleEditMode">
+            <text class="iconfont">✏️</text>
+            <text class="btn-text">编辑</text>
+          </view>
+        </view>
+        <block wx:if="{{isEditingMemo}}">
+          <textarea 
+            class="memo-input" 
+            placeholder="记录这段练习的要点、感受..." 
+            bindinput="bindMemoInput" 
+            value="{{currentMemo}}"
+            maxlength="500"
+          ></textarea>
+        </block>
+        <block wx:else>
+          <view class="memo-readonly">{{currentMemo}}</view>
+        </block>
         <view class="memo-timestamps">
           <view 
-            class="timestamp-item" 
+            class="timestamp-item {{!isEditingMemo ? 'clickable' : ''}}" 
             wx:for="{{timestamps}}" 
             wx:key="index"
             data-time="{{item}}"
@@ -114,8 +125,13 @@
       </view>
     </view>
     <view class="memo-footer">
-      <button class="cancel-btn" bindtap="cancelMemo">取消</button>
-      <button class="save-btn" bindtap="saveMemo">保存</button>
+      <block wx:if="{{isEditingMemo}}">
+        <button class="cancel-btn" bindtap="cancelMemo">取消</button>
+        <button class="save-btn" bindtap="saveMemo">保存</button>
+      </block>
+      <block wx:else>
+        <button class="close-btn" bindtap="closeMemo">关闭</button>
+      </block>
     </view>
   </view>
 </view>

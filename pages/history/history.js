@@ -19,7 +19,8 @@ Page({
     currentMemoIndex: -1,
     showPlayerPanel: false,
     timestampRegex: /\[\d{2}:\d{2}:\d{2}\]/g,
-    timestamps: []
+    timestamps: [],
+    isEditingMemo: false
   },
 
   onLoad: function (options) {
@@ -154,6 +155,8 @@ Page({
 
   // 点击时间戳跳转
   onTimestampClick: function(e) {
+    if (this.data.isEditingMemo) return;
+    
     const timestamp = e.currentTarget.dataset.time;
     const seconds = this.parseTimestamp(timestamp);
     
@@ -364,7 +367,15 @@ Page({
       showMemoModal: true,
       currentMemo: memo,
       currentMemoIndex: index,
-      timestamps: timestamps
+      timestamps: timestamps,
+      isEditingMemo: false
+    });
+  },
+
+  // 切换编辑模式
+  toggleEditMode: function() {
+    this.setData({
+      isEditingMemo: true
     });
   },
 
@@ -396,9 +407,7 @@ Page({
       wx.setStorageSync('allRecords', records);
       
       this.setData({
-        showMemoModal: false,
-        currentMemo: '',
-        currentMemoIndex: -1
+        isEditingMemo: false
       });
 
       this.loadRecords();
@@ -412,10 +421,13 @@ Page({
 
   // 取消备忘录
   cancelMemo: function() {
+    const index = this.data.currentAudioIndex;
+    const record = this.data.filteredRecords[index];
+    const memo = record.memo || '';
+    
     this.setData({
-      showMemoModal: false,
-      currentMemo: '',
-      currentMemoIndex: -1
+      isEditingMemo: false,
+      currentMemo: memo
     });
   },
 
@@ -466,6 +478,16 @@ Page({
   bindCommentInput: function(e) {
     this.setData({
       comment: e.detail.value
+    });
+  },
+
+  // 关闭备忘录
+  closeMemo: function() {
+    this.setData({
+      showMemoModal: false,
+      currentMemo: '',
+      currentMemoIndex: -1,
+      isEditingMemo: false
     });
   }
 }); 
