@@ -335,27 +335,45 @@ Page({
     ctx.fillText('单位：小时', width - padding, topPadding - 5);
     ctx.restore();
 
-    // 找出最大值来确定图表高度
-    const maxValue = Math.max(...data, 1);
+    // 根据当前tab设置刻度间隔
+    let scaleInterval;
+    let minGridLines = 10; // 确保至少有10个刻度单位
+    switch(this.data.currentTab) {
+      case 'daily':
+        scaleInterval = 1; // 1小时
+        break;
+      case 'weekly':
+        scaleInterval = 5; // 5小时
+        break;
+      case 'monthly':
+        scaleInterval = 15; // 15小时
+        break;
+      default:
+        scaleInterval = 1;
+    }
+
+    // 找出最大值并向上取整到刻度间隔的倍数
+    const maxValue = Math.max(...data, scaleInterval * minGridLines);
+    const normalizedMaxValue = Math.ceil(maxValue / scaleInterval) * scaleInterval;
+    const gridLines = Math.max(minGridLines, normalizedMaxValue / scaleInterval);
     
     // 绘制水平网格线和刻度
     ctx.beginPath();
     ctx.strokeStyle = '#e0e0e0';
     ctx.lineWidth = 1;
     
-    const gridLines = 3;
     for (let i = 0; i <= gridLines; i++) {
       const y = topPadding + (chartHeight * (i / gridLines));
       ctx.moveTo(padding, y);
       ctx.lineTo(width - padding, y);
       
       // 绘制刻度值
-      const value = Math.round((maxValue * (gridLines - i) / gridLines) * 100) / 100;  // 保留两位小数
+      const value = (normalizedMaxValue * (gridLines - i) / gridLines);
       ctx.save();
       ctx.textAlign = 'right';
       ctx.fillStyle = '#999999';
       ctx.font = '12px Arial';
-      ctx.fillText(value.toFixed(2), padding - 5, y + 4);  // 显示两位小数
+      ctx.fillText(value.toFixed(1), padding - 5, y + 4);
       ctx.restore();
     }
     ctx.stroke();
@@ -363,7 +381,7 @@ Page({
     // 绘制柱状图、数值和x轴标签
     data.forEach((value, index) => {
       const x = padding + (barWidth + barGap) * index;
-      const barHeight = value === 0 ? 0 : (value / maxValue) * (chartHeight - 20);
+      const barHeight = value === 0 ? 0 : (value / normalizedMaxValue) * (chartHeight - 20);
       const y = height - bottomPadding - barHeight;
 
       // 绘制柱子
@@ -376,7 +394,7 @@ Page({
         ctx.textAlign = 'center';
         ctx.fillStyle = '#666666';
         ctx.font = '12px Arial';
-        ctx.fillText(value.toFixed(2), x + barWidth/2, y - 5);  // 显示两位小数
+        ctx.fillText(value.toFixed(1), x + barWidth/2, y - 5);
         ctx.restore();
       }
 
