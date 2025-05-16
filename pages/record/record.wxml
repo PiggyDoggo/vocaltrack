@@ -4,27 +4,6 @@
     <text class="date-text">日期：{{currentDate}}</text>
   </view>
 
-  <view class="record-section">
-    <view class="timer">{{recordTimeText}}</view>
-    <view class="record-controls">
-      <block wx:if="{{!isRecording}}">
-        <button class="record-btn" bindtap="handleRecordTap">
-          开始录音
-        </button>
-      </block>
-      <block wx:else>
-        <view class="dual-buttons">
-          <button class="control-btn pause-btn" bindtap="handlePauseTap">
-            {{isPaused ? '继续' : '暂停'}}
-          </button>
-          <button class="control-btn stop-btn" bindtap="handleStopTap">
-            结束
-          </button>
-        </view>
-      </block>
-    </view>
-  </view>
-
   <view class="form-item">
     <view class="picker-section">
       <text class="picker-label">音乐门类：</text>
@@ -40,7 +19,23 @@
     </view>
   </view>
 
-  <view class="records-today">
-    <text class="records-count">今日已记录: {{todayRecordsCount}}/3</text>
+  <view class="upload-section">
+    <block wx:if="{{!audioFile}}">
+      <view class="upload-title">上传练习录音</view>
+      <button class="upload-btn" bindtap="handleChooseAudio">
+        <text class="upload-btn-text">选择音频文件</text>
+      </button>
+      <view class="upload-tips">
+        <view class="tip-item">支持格式：MP3、WAV、M4A</view>
+        <view class="tip-item">文件大小：不超过100MB</view>
+        <view class="tip-item">今日已上传：{{todayRecordsCount}}/{{MAX_DAILY_RECORDS}}个</view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="file-info">
+        <text class="file-name">文件名：{{audioName}}</text>
+        <text class="file-duration">时长：{{audioDuration}}秒</text>
+      </view>
+    </block>
   </view>
 </view>

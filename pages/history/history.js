@@ -179,6 +179,13 @@ Page({
       const dateB = new Date(b.date + ' ' + b.time);
       return dateB - dateA;
     });
+
+    // 为每条记录添加格式化的时长
+    records = records.map(record => ({
+      ...record,
+      durationText: this.formatTime(record.duration)
+    }));
+
     this.setData({ records }, () => {
       this.filterRecords();
     });

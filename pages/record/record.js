@@ -1,5 +1,4 @@
 // pages/record/record.js
-const MAX_RECORD_TIME = 10800; // 3小时 = 10800秒
 const MAX_DAILY_RECORDS = 3;
 
 // 定义音乐门类数据
@@ -32,20 +31,13 @@ Page({
       ['请选择音乐门类']
     ],
     musicTypeIndex: [0, 0],
-    isRecording: false,
-    isPaused: false,
-    recordPath: '',
-    recordDuration: 0,
-    recordTimeText: '00:00:00',
     todayRecordsCount: 0,
-    recorderManager: null,
-    timer: null
+    audioFile: null, // 存储上传的音频文件信息
+    audioDuration: 0, // 音频时长（秒）
+    audioName: '', // 音频文件名
   },
 
   onLoad: function () {
-    // 初始化录音管理器
-    this.recorderManager = wx.getRecorderManager();
-    this.initRecorderListeners();
     this.setCurrentDate();
     this.loadTodayRecords();
   },
@@ -98,16 +90,6 @@ Page({
     }
   },
 
-  onUnload: function () {
-    // 页面卸载时清理
-    if (this.data.timer) {
-      clearInterval(this.data.timer);
-    }
-    if (this.data.isRecording && !this.data.isPaused) {
-      this.recorderManager.stop();
-    }
-  },
-
   setCurrentDate: function () {
     const now = new Date();
     const year = now.getFullYear();
@@ -118,150 +100,16 @@ Page({
     });
   },
 
-  initRecorderListeners: function () {
-    // 录音开始事件
-    this.recorderManager.onStart(() => {
-      this.setData({
-        isRecording: true,
-        isPaused: false,
-        recordDuration: this.data.recordDuration || 0
-      });
-      this.startTimer();
-    });
-
-    // 录音暂停事件
-    this.recorderManager.onPause(() => {
-      this.setData({
-        isPaused: true
-      });
-      if (this.data.timer) {
-        clearInterval(this.data.timer);
-      }
-    });
-
-    // 录音继续事件
-    this.recorderManager.onResume(() => {
-      this.setData({
-        isPaused: false
-      });
-      this.startTimer();
-    });
-
-    // 录音结束事件，自动保存
-    this.recorderManager.onStop((res) => {
-      this.setData({
-        isRecording: false,
-        isPaused: false,
-        recordPath: res.tempFilePath
-      });
-      if (this.data.timer) {
-        clearInterval(this.data.timer);
-      }
-      
-      // 检查是否选择了音乐门类
-      if (this.data.musicTypeIndex[0] === 0) {
-        wx.showModal({
-          title: '提示',
-          content: '请选择音乐门类后再保存录音',
-          showCancel: false,
-          success: () => {
-            // 清理录音文件
-            this.setData({
-              recordPath: '',
-              recordDuration: 0,
-              recordTimeText: '00:00:00'
-            });
-          }
-        });
-        return;
-      }
-      
-      // 自动保存录音
-      const recordData = {
-        id: Date.now(),
-        date: this.data.currentDate,
-        musicType: `${this.data.musicTypeArray[0][this.data.musicTypeIndex[0]]} - ${this.data.musicTypeArray[1][this.data.musicTypeIndex[1]]}`,
-        duration: this.data.recordDuration,
-        path: res.tempFilePath,
-        createTime: new Date().toLocaleTimeString()
-      };
-
-      try {
-        let records = wx.getStorageSync('allRecords') || [];
-        records.unshift(recordData);
-        wx.setStorageSync('allRecords', records);
-
-        this.setData({
-          recordPath: '',
-          recordDuration: 0,
-          recordTimeText: '00:00:00',
-          todayRecordsCount: this.data.todayRecordsCount + 1
-        });
-
-        wx.showToast({
-          title: '保存成功',
-          icon: 'success',
-          duration: 2000,
-          success: () => {
-            setTimeout(() => {
-              wx.navigateBack();
-            }, 2000);
-          }
-        });
-      } catch (e) {
-        console.error('保存录音失败', e);
-        wx.showToast({
-          title: '保存失败',
-          icon: 'none'
-        });
-      }
-    });
-
-    // 录音错误事件
-    this.recorderManager.onError((res) => {
-      wx.showToast({
-        title: '录音失败',
-        icon: 'none'
-      });
-      this.setData({
-        isRecording: false,
-        isPaused: false
-      });
-      if (this.data.timer) {
-        clearInterval(this.data.timer);
-      }
-    });
-  },
-
-  startTimer: function () {
-    const timer = setInterval(() => {
-      let duration = this.data.recordDuration + 1;
-      if (duration >= MAX_RECORD_TIME) {
-        this.handleStopTap();
-        return;
-      }
-      const hours = Math.floor(duration / 3600);
-      const minutes = Math.floor((duration % 3600) / 60);
-      const seconds = duration % 60;
-      this.setData({
-        recordDuration: duration,
-        recordTimeText: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-      });
-    }, 1000);
-    this.setData({ timer });
-  },
-
-  handleRecordTap: function () {
-    // 检查是否达到每日记录上限
+  // 选择音频文件
+  handleChooseAudio: function() {
     if (this.data.todayRecordsCount >= MAX_DAILY_RECORDS) {
       wx.showToast({
-        title: '今日录音已达上限',
+        title: '今日上传已达上限',
         icon: 'none'
       });
       return;
     }
 
-    // 检查是否选择了音乐门类
     if (this.data.musicTypeIndex[0] === 0) {
       wx.showToast({
         title: '请先选择音乐门类',
@@ -269,49 +117,65 @@ Page({
       });
       return;
     }
-    
-    this.recorderManager.start({
-      duration: MAX_RECORD_TIME * 1000,
-      sampleRate: 44100,
-      numberOfChannels: 1,
-      encodeBitRate: 192000,
-      format: 'mp3'
+
+    wx.chooseMessageFile({
+      count: 1,
+      type: 'file',
+      extension: ['mp3', 'wav', 'm4a'],
+      success: (res) => {
+        const tempFile = res.tempFiles[0];
+        console.log('选择的文件：', tempFile);
+
+        // 检查文件大小（限制为100MB）
+        if (tempFile.size > 100 * 1024 * 1024) {
+          wx.showToast({
+            title: '文件大小不能超过100MB',
+            icon: 'none'
+          });
+          return;
+        }
+
+        // 获取音频时长
+        const audioContext = wx.createInnerAudioContext();
+        audioContext.src = tempFile.path;
+        
+        audioContext.onCanplay(() => {
+          // 更新文件信息
+          this.setData({
+            audioFile: tempFile,
+            audioName: tempFile.name,
+            audioDuration: Math.floor(audioContext.duration)
+          });
+          audioContext.destroy();
+          
+          // 自动保存
+          this.saveAudioFile();
+        });
+
+        audioContext.onError((err) => {
+          console.error('音频文件错误：', err);
+          wx.showToast({
+            title: '不支持的音频格式',
+            icon: 'none'
+          });
+          audioContext.destroy();
+        });
+      },
+      fail: (err) => {
+        console.error('选择文件失败：', err);
+        wx.showToast({
+          title: '选择文件失败',
+          icon: 'none'
+        });
+      }
     });
   },
 
-  handlePauseTap: function() {
-    if (this.data.isPaused) {
-      this.recorderManager.resume();
-    } else {
-      this.recorderManager.pause();
-    }
-  },
-
-  handleStopTap: function() {
-    this.recorderManager.stop();
-  },
-
-  loadTodayRecords: function () {
-    const records = wx.getStorageSync('allRecords') || [];
-    const today = this.data.currentDate;
-    const todayRecords = records.filter(record => record.date === today);
-    this.setData({
-      todayRecordsCount: todayRecords.length
-    });
-  },
-
-  submitRecord: function() {
-    if (!this.data.recordPath) {
+  // 保存音频文件
+  saveAudioFile: function() {
+    if (!this.data.audioFile) {
       wx.showToast({
-        title: '请先录制音频',
-        icon: 'none'
-      });
-      return;
-    }
-
-    if (this.data.todayRecordsCount >= MAX_DAILY_RECORDS) {
-      wx.showToast({
-        title: '今日录音已达上限',
+        title: '请先选择音频文件',
         icon: 'none'
       });
       return;
@@ -321,8 +185,9 @@ Page({
       id: Date.now(),
       date: this.data.currentDate,
       musicType: `${this.data.musicTypeArray[0][this.data.musicTypeIndex[0]]} - ${this.data.musicTypeArray[1][this.data.musicTypeIndex[1]]}`,
-      duration: this.data.recordDuration,
-      path: this.data.recordPath,
+      duration: this.data.audioDuration,
+      path: this.data.audioFile.path,
+      name: this.data.audioFile.name,
       createTime: new Date().toLocaleTimeString()
     };
 
@@ -332,22 +197,37 @@ Page({
       wx.setStorageSync('allRecords', records);
 
       this.setData({
-        recordPath: '',
-        recordDuration: 0,
-        recordTimeText: '00:00:00',
+        audioFile: null,
+        audioDuration: 0,
+        audioName: '',
         todayRecordsCount: this.data.todayRecordsCount + 1
       });
 
       wx.showToast({
         title: '保存成功',
-        icon: 'success'
+        icon: 'success',
+        duration: 2000,
+        success: () => {
+          setTimeout(() => {
+            wx.navigateBack();
+          }, 2000);
+        }
       });
     } catch (e) {
-      console.error('保存录音失败', e);
+      console.error('保存文件失败', e);
       wx.showToast({
         title: '保存失败',
         icon: 'none'
       });
     }
+  },
+
+  loadTodayRecords: function () {
+    const records = wx.getStorageSync('allRecords') || [];
+    const today = this.data.currentDate;
+    const todayRecords = records.filter(record => record.date === today);
+    this.setData({
+      todayRecordsCount: todayRecords.length
+    });
   }
 });

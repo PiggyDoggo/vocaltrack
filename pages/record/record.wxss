@@ -1,40 +1,165 @@
 /* pages/record/record.wxss */
 .container {
-  padding: 20rpx;
+  padding: 30rpx;
+  background-color: #f8f8f8;
+  min-height: 100vh;
 }
+
 .form-item {
   margin-bottom: 30rpx;
 }
-.picker {
-  padding: 20rpx;
-  background-color: #f8f8f8;
-  border-radius: 10rpx;
-}
-slider {
-  margin: 20rpx 0;
-}
+
 .date-text {
   font-size: 32rpx;
   color: #333;
+  display: block;
+  margin-bottom: 20rpx;
 }
+
+.picker-section {
+  background: #fff;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.05);
+}
+
+.picker-label {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  display: block;
+}
+
+.picker-content {
+  font-size: 30rpx;
+  color: #666;
+  padding: 10rpx 0;
+}
+
+.upload-section {
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 40rpx 30rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.05);
+  margin-top: 40rpx;
+}
+
+.upload-title {
+  font-size: 36rpx;
+  color: #333;
+  font-weight: 500;
+  text-align: center;
+  margin-bottom: 40rpx;
+}
+
+.upload-btn {
+  width: 100% !important;
+  height: 100rpx !important;
+  background: linear-gradient(135deg, #4CAF50, #45a049) !important;
+  border-radius: 50rpx !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 30rpx !important;
+  box-shadow: 0 6rpx 20rpx rgba(76, 175, 80, 0.3) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.upload-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+  transform: scale(0);
+  transition: transform 0.3s ease;
+}
+
+.upload-btn:active::after {
+  transform: scale(2);
+}
+
+.upload-btn-text {
+  color: #fff;
+  font-size: 32rpx;
+  font-weight: 500;
+}
+
+.upload-tips {
+  margin-top: 30rpx;
+  padding: 20rpx;
+  background-color: #f8f8f8;
+  border-radius: 8rpx;
+}
+
+.tip-item {
+  font-size: 26rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  display: flex;
+  align-items: center;
+}
+
+.tip-item:last-child {
+  margin-bottom: 0;
+}
+
+.file-info {
+  background-color: #f8f8f8;
+  padding: 20rpx;
+  border-radius: 8rpx;
+}
+
+.file-name {
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  word-break: break-all;
+  display: block;
+}
+
+.file-duration {
+  font-size: 26rpx;
+  color: #666;
+  display: block;
+}
+
+.picker {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  background-color: #f8f8f8;
+  border-radius: 10rpx;
+  margin-bottom: 30rpx;
+}
+
+slider {
+  margin: 20rpx 0;
+}
+
 .record-section {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 40rpx 0;
 }
+
 .timer {
   font-size: 48rpx;
   font-weight: bold;
   margin-bottom: 20rpx;
   color: #333;
 }
+
 .record-controls {
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 20rpx 0;
 }
+
 .record-btn {
   width: 160rpx !important;
   height: 160rpx !important;
@@ -166,26 +291,6 @@ slider {
   font-size: 28rpx;
 }
 
-.picker-section {
-  background: #fff;
-  padding: 20rpx;
-  border-radius: 8rpx;
-  border: 1rpx solid #ddd;
-}
-
-.picker-label {
-  font-size: 28rpx;
-  color: #333;
-  margin-bottom: 10rpx;
-  display: block;
-}
-
-.picker-content {
-  font-size: 30rpx;
-  color: #666;
-  padding: 10rpx 0;
-}
-
 textarea {
   width: 100%;
   height: 160rpx;
@@ -203,14 +308,17 @@ input {
   border: 1rpx solid #ddd;
   border-radius: 8rpx;
 }
+
 .records-today {
   margin: 20rpx 0;
   text-align: center;
 }
+
 .records-count {
   color: #666;
   font-size: 28rpx;
 }
+
 .submit-btn {
   width: 100%;
   background: linear-gradient(135deg, #FF6B6B, #FF8E8E);
@@ -222,20 +330,24 @@ input {
   font-size: 32rpx;
   box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.2);
 }
+
 .submit-btn[disabled] {
   background: #ccc;
   color: #fff;
   box-shadow: none;
 }
+
 .records-list {
   margin-top: 40rpx;
 }
+
 .section-title {
   font-size: 32rpx;
   font-weight: bold;
   margin-bottom: 20rpx;
   display: block;
 }
+
 .record-item {
   display: flex;
   justify-content: space-between;
@@ -243,18 +355,22 @@ input {
   padding: 20rpx;
   border-bottom: 1rpx solid #eee;
 }
+
 .record-info {
   flex: 1;
 }
+
 .record-time {
   font-size: 28rpx;
   color: #333;
   margin-right: 20rpx;
 }
+
 .record-duration {
   font-size: 24rpx;
   color: #666;
 }
+
 .play-btn {
   min-width: 120rpx;
   font-size: 24rpx;
@@ -263,6 +379,7 @@ input {
   background: #1296db;
   color: white;
 }
+
 .ad-container {
   margin-top: 40rpx;
   padding: 20rpx;
@@ -277,4 +394,11 @@ button {
 
 button::after {
   border: none !important;
+}
+
+.daily-limit-tip {
+  margin-top: 30rpx;
+  text-align: center;
+  font-size: 24rpx;
+  color: #666;
 }

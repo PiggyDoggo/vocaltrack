@@ -23,7 +23,7 @@
           </view>
           <view class="record-info">
             <text class="profession">{{item.musicType}}</text>
-            <text class="duration">{{item.duration}}秒</text>
+            <text class="duration">{{item.durationText || formatTime(item.duration)}}</text>
           </view>
           <view class="record-memo" wx:if="{{item.memo && item.memo.trim()}}">
             <text class="memo-text">{{item.memo}}</text>
