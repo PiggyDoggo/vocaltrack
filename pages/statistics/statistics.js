@@ -141,15 +141,15 @@ Page({
   getDailyData: function(records) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const twentyDaysAgo = new Date(today);
-    twentyDaysAgo.setDate(today.getDate() - 19);
+    const sevenDaysAgo = new Date(today);
+    sevenDaysAgo.setDate(today.getDate() - 7);
 
     const data = [];
     const labels = [];
     let totalDuration = 0;
     let totalSessions = 0;
 
-    for (let d = new Date(twentyDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
+    for (let d = new Date(sevenDaysAgo); d <= today; d.setDate(d.getDate() + 1)) {
       const year = d.getFullYear();
       const month = String(d.getMonth() + 1).padStart(2, '0');
       const day = String(d.getDate()).padStart(2, '0');
@@ -157,11 +157,9 @@ Page({
 
       // 生成显示用的标签
       if (month === '01' && day === '01') {
-        labels.push(`${year}年\n1月\n1日`);
-      } else if (day === '01') {
-        labels.push(`${month}月\n1日`);
+        labels.push(`${year}年\n${month}月\n${day}日`);
       } else {
-        labels.push(day + '日');
+        labels.push(`${month}/${day}`);
       }
       
       const dayRecords = records.filter(r => r.date === fullDateStr);
@@ -173,7 +171,7 @@ Page({
     }
 
     this.setData({
-      currentPeriod: '近20天',
+      currentPeriod: '近8天',
       periodSessions: totalSessions,
       periodDuration: totalDuration.toFixed(2)
     });
@@ -193,25 +191,18 @@ Page({
     let totalDuration = 0;
     let totalSessions = 0;
 
-    for (let i = 19; i >= 0; i--) {
+    for (let i = 7; i >= 0; i--) {
       const currentWeekStart = new Date(weekStart);
       currentWeekStart.setDate(weekStart.getDate() - (i * 7));
       const currentWeekEnd = new Date(currentWeekStart);
       currentWeekEnd.setDate(currentWeekStart.getDate() + 6);
 
       // 获取周一的日期信息
-      const year = currentWeekStart.getFullYear();
       const month = String(currentWeekStart.getMonth() + 1).padStart(2, '0');
       const day = String(currentWeekStart.getDate()).padStart(2, '0');
 
       // 生成显示用的标签
-      if (month === '01' && day === '01') {
-        labels.push(`${year}年\n1月\n1日`);
-      } else if (day === '01') {
-        labels.push(`${month}月\n1日`);
-      } else {
-        labels.push(day + '日');
-      }
+      labels.push(`${month}/${day}`);
 
       const weekRecords = records.filter(r => {
         const recordDate = new Date(r.date);
@@ -227,7 +218,7 @@ Page({
     }
 
     this.setData({
-      currentPeriod: '近20周',
+      currentPeriod: '近8周',
       periodSessions: totalSessions,
       periodDuration: totalDuration.toFixed(2)
     });
@@ -244,7 +235,7 @@ Page({
     let totalDuration = 0;
     let totalSessions = 0;
 
-    for (let i = 19; i >= 0; i--) {
+    for (let i = 7; i >= 0; i--) {
       const monthStart = new Date(currentMonth);
       monthStart.setMonth(monthStart.getMonth() - i);
       const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
@@ -255,7 +246,7 @@ Page({
 
       // 生成显示用的标签
       if (month === '01') {
-        labels.push(`${year}年\n1月`);
+        labels.push(`${year}/${month}`);
       } else {
         labels.push(month + '月');
       }
@@ -273,7 +264,7 @@ Page({
     }
 
     this.setData({
-      currentPeriod: '近20月',
+      currentPeriod: '近8月',
       periodSessions: totalSessions,
       periodDuration: totalDuration.toFixed(2)
     });
@@ -292,7 +283,7 @@ Page({
     const width = this.canvasWidth;
     const height = this.canvasHeight;
     const padding = 40;
-    const bottomPadding = 60;
+    const bottomPadding = 60; // 恢复原始底部padding
     const topPadding = 40;
 
     // 清空画布
@@ -317,15 +308,10 @@ Page({
     const chartWidth = width - padding * 2;
     const chartHeight = height - topPadding - bottomPadding;
     
-    // 根据屏幕宽度和数据点数量计算柱子宽度和间距
+    // 计算柱子宽度和间距
     const totalBars = data.length;
-    const minBarWidth = 30;  // 最小柱子宽度
-    const minGap = 10;       // 最小间距
-    
-    // 计算单个数据点占用的总宽度
-    const pointWidth = (chartWidth - minGap) / totalBars;
-    const barWidth = Math.max(minBarWidth, pointWidth * 0.6);  // 柱子占60%
-    const barGap = Math.max(minGap, pointWidth * 0.4);        // 间距占40%
+    const barWidth = (chartWidth - (totalBars - 1) * 10) / totalBars; // 固定间距为10
+    const barGap = 10;
 
     // 绘制"小时"单位标签
     ctx.save();
@@ -337,16 +323,16 @@ Page({
 
     // 根据当前tab设置刻度间隔
     let scaleInterval;
-    let minGridLines = 10; // 确保至少有10个刻度单位
+    let minGridLines = 10; // 恢复原始网格线数量
     switch(this.data.currentTab) {
       case 'daily':
         scaleInterval = 1; // 1小时
         break;
       case 'weekly':
-        scaleInterval = 5; // 5小时
+        scaleInterval = 5; // 恢复为5小时
         break;
       case 'monthly':
-        scaleInterval = 15; // 15小时
+        scaleInterval = 15; // 恢复为15小时
         break;
       default:
         scaleInterval = 1;
@@ -403,18 +389,7 @@ Page({
       ctx.textAlign = 'center';
       ctx.fillStyle = '#666666';
       ctx.font = '12px Arial';
-      
-      const labelX = x + barWidth / 2;
-      const labelY = height - bottomPadding + 15;
-      
-      // 处理多行标签
-      const labelParts = labels[index].split('\n');
-      const lineHeight = 15;
-      
-      labelParts.forEach((part, i) => {
-        ctx.fillText(part, labelX, labelY + (i * lineHeight));
-      });
-      
+      ctx.fillText(labels[index], x + barWidth/2, height - bottomPadding + 15);
       ctx.restore();
     });
   },
