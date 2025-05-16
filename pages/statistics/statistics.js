@@ -3,6 +3,7 @@ Page({
   data: {
     weeklyTotal: 0,
     consecutiveDays: 0,
+    totalTrainingHours: 0,
     currentTab: 'daily',
     currentPeriod: '本期',
     periodSessions: 0,
@@ -83,7 +84,8 @@ Page({
     if (records.length === 0) {
       this.setData({
         weeklyTotal: 0,
-        consecutiveDays: 0
+        consecutiveDays: 0,
+        totalTrainingHours: 0
       });
       return;
     }
@@ -93,7 +95,16 @@ Page({
     
     // 计算连续打卡天数
     const consecutiveDays = this.calculateConsecutiveDays(records);
-    this.setData({ consecutiveDays });
+    
+    // 计算历史总时长
+    const totalTrainingHours = records.reduce((total, record) => {
+      return total + (record.duration / 3600);  // 转换为小时
+    }, 0).toFixed(2);  // 保留两位小数
+
+    this.setData({ 
+      consecutiveDays,
+      totalTrainingHours
+    });
   },
 
   calculateRecentStats: function(records) {
