@@ -89,7 +89,7 @@
 <view class="memo-modal" wx:if="{{showMemoModal}}">
   <view class="memo-content">
     <view class="memo-header">
-      <text class="memo-title">练习备忘</text>
+      <text class="memo-title">备忘录</text>
     </view>
     <view class="memo-body">
       <view class="memo-content-wrapper">
@@ -110,18 +110,18 @@
         </block>
         <block wx:else>
           <view class="memo-readonly">{{currentMemo}}</view>
-        </block>
-        <view class="memo-timestamps">
-          <view 
-            class="timestamp-item {{!isEditingMemo ? 'clickable' : ''}}" 
-            wx:for="{{timestamps}}" 
-            wx:key="index"
-            data-time="{{item}}"
-            bindtap="onTimestampClick"
-          >
-            {{item}}
+          <view class="memo-timestamps">
+            <view 
+              class="timestamp-item" 
+              wx:for="{{timestamps}}" 
+              wx:key="index"
+              data-time="{{item}}"
+              bindtap="onTimestampClick"
+            >
+              {{item}}
+            </view>
           </view>
-        </view>
+        </block>
       </view>
     </view>
     <view class="memo-footer">
